@@ -7,7 +7,7 @@
 
 #include <Solver.h>
 
-signed main() noexcept
+auto main() noexcept -> signed
 try {
 	task_two::Solver{std::cin, std::cout}.solve();
 	return EXIT_SUCCESS;

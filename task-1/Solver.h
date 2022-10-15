@@ -1,5 +1,4 @@
 /*
- * \copyright (C) 2022 Λ Γ Γ I V Λ L
  * \author: Lobanov F.S.
  * \date: 10/15/22
  * \time: 11:16 AM

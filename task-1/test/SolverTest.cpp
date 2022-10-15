@@ -12,6 +12,7 @@
 namespace {
 
 using namespace task_one;
+
 class SolverTest : public testing::Test
 {};
 
