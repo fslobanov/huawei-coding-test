@@ -17,16 +17,17 @@ namespace task_one {
 class Solver final
 {
 public:
-	Solver(common::InputStream &input, common::OutputStream &output);
-	void solve() noexcept(false);
-
-private:
 	// Task precondition says than max number of cases is 1 <= T <= 20
 	constexpr static auto kCasesMin = 1UL;
 	constexpr static auto kCasesMax = 20UL;
 	// Task precondition says than each integer will not exceed 1000 digits
 	constexpr static auto kMaxDigits = 1'000UL;
+	
+public:
+	Solver(common::InputStream &input, common::OutputStream &output);
+	void solve() noexcept(false);
 
+private:
 	// An input buffer for number, just an ordinary string, not an array, to be compatible with
 	// standard library stream functions
 	using Number = std::string;

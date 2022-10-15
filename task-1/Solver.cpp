@@ -26,9 +26,6 @@ Solver::Solver(common::InputStream &input, common::OutputStream &output)
 void Solver::solve() noexcept(false)
 {
 	const auto number_of_cases = common::parse_integer(input, kCasesMin, kCasesMax);
-
-	output << "\nOutput" << std::endl;
-
 	for(auto case_number = 0UL; case_number < number_of_cases; ++case_number) {
 		read_number(left);
 		read_number(right);
@@ -73,7 +70,7 @@ std::size_t Solver::sum_numbers() noexcept(false)
 	std::size_t sum_length{0};
 	std::uint8_t carry{0};
 
-	while(left.rend() != left_it && right.rend() != right_it) {
+	while(!(left.rend() == left_it && right.rend() == right_it)) {
 		auto sum = std::exchange(carry, 0);
 
 		if(left.rend() != left_it) {
