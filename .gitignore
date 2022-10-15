@@ -1,0 +1,13 @@
+.idea
+.vscode
+build
+run
+cmake-build-*
+include/.gitignore
+__pycache__
+git_version_tag
+git_user_email
+tags
+*.vim
+*.swp
+CMakeLists.txt.user
