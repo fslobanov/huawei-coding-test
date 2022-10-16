@@ -21,7 +21,7 @@ Solver::Solver(common::InputStream &input, common::OutputStream &output)
 
 void Solver::solve() noexcept(false)
 {
-	for(auto case_index{0}; process_case(case_index); ++case_index) {
+	for(auto case_index{0u}; process_case(case_index); ++case_index) {
 	}
 }
 
@@ -50,7 +50,7 @@ bool Solver::process_case(const std::size_t case_number) noexcept(false)
 
 void Solver::read_numbers(const std::size_t number_count, const std::size_t upper_bound, Numbers &numbers) noexcept
 {
-	for(auto index = 0UL; index < number_count; ++index) {
+	for(auto index{0u}; index < number_count; ++index) {
 		try {
 			numbers.emplace(common::parse_integer(input, 1, upper_bound));
 		} catch(...) {

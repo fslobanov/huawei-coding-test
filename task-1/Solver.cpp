@@ -26,7 +26,7 @@ Solver::Solver(common::InputStream &input, common::OutputStream &output)
 void Solver::solve() noexcept(false)
 {
 	const auto number_of_cases = common::parse_integer(input, kCasesMin, kCasesMax);
-	for(auto case_number = 0UL; case_number < number_of_cases; ++case_number) {
+	for(auto case_number{0u}; case_number < number_of_cases; ++case_number) {
 		read_number(left);
 		read_number(right);
 		print_case(case_number, sum_numbers());

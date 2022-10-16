@@ -17,10 +17,10 @@ class Solver final
 {
 public:
 	// Task precondition says than max number of cases is 1 <= T <= 20
-	constexpr static auto kCasesMin = 1UL;
-	constexpr static auto kCasesMax = 20UL;
+	constexpr static auto kCasesMin = 1ul;
+	constexpr static auto kCasesMax = 20ul;
 	// Task precondition says than each integer will not exceed 1000 digits
-	constexpr static auto kMaxDigits = 1'000UL;
+	constexpr static auto kMaxDigits = 1'000ul;
 	
 public:
 	Solver(common::InputStream &input, common::OutputStream &output);
