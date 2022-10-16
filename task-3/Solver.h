@@ -20,7 +20,7 @@ class Solver final
 public:
 	Solver(common::InputStream &input, common::OutputStream &output);
 	void solve() noexcept(false);
-	
+
 private:
 	constexpr static int kUnsolved = -1;
 	enum class Cell : bool
@@ -29,11 +29,13 @@ private:
 		Filled = true
 	};
 	using Cells = std::vector<Cell>;
-	
+
 	struct Piece final
 	{
+		using Storage = std::vector<Piece>;
+
 		std::size_t index{};
-		
+
 		std::uint32_t left_column{};
 		std::uint32_t top_row{};
 		std::uint32_t right_column{};
@@ -46,25 +48,28 @@ private:
 			return os;
 		}
 	};
-	
+
 	struct MatrixRow final
 	{
 		Piece piece;
 		Cells cells;
+		std::size_t weight{0};
 	};
 	using Matrix = std::vector<MatrixRow>;
 
 private:
 	common::InputStream &input;
 	common::OutputStream &output;
-	
-	std::vector<Piece> pieces;
-	int current_best_result;
-	
+
+	int current_result;
+
 private:
 	void process_case(std::size_t case_number) noexcept(false);
-	void parse_pieces(std::uint32_t piece_count, std::uint32_t rows, std::uint32_t columns) noexcept(false);
-	[[nodiscard]] int complete_map(std::uint32_t rows, std::uint32_t columns) noexcept;
+	[[nodiscard]] Piece::Storage parse_pieces(std::uint32_t piece_count,
+	                                          std::uint32_t rows,
+	                                          std::uint32_t columns) noexcept(false);
+	[[nodiscard]] int complete_map(std::uint32_t piece_count, std::uint32_t height, std::uint32_t width) noexcept;
+	[[nodiscard]] Matrix make_matrix(std::uint32_t piece_count, std::uint32_t height, std::uint32_t width);
 	// https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X
 	void algorithm_x(const Matrix &original_matrix, std::uint32_t depth);
 	void print_case(int result) const noexcept;

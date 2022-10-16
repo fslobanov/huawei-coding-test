@@ -17,9 +17,8 @@ namespace task_three {
 Solver::Solver(common::InputStream &input, common::OutputStream &output)
     : input{input}
     , output{output}
-    , current_best_result{kUnsolved}
+    , current_result{kUnsolved}
 {
-	pieces.reserve(100);
 }
 
 void Solver::solve() noexcept(false)
@@ -42,13 +41,15 @@ void Solver::process_case(const std::size_t) noexcept(false)
 		return;
 	}
 
-	parse_pieces(piece_count, row_count, column_count);
-	print_case(complete_map(row_count, column_count));
+	print_case(complete_map(piece_count, row_count, column_count));
 }
 
-void Solver::parse_pieces(const std::uint32_t piece_count, const std::uint32_t rows, const std::uint32_t columns)
+Solver::Piece::Storage Solver::parse_pieces(const std::uint32_t piece_count,
+                                            const std::uint32_t rows,
+                                            const std::uint32_t columns)
 {
-	pieces.clear();
+	Piece::Storage pieces;
+	pieces.reserve(piece_count);
 
 	for(auto piece_number{0u}; piece_number < piece_count; ++piece_number) {
 		Piece piece{piece_number,
@@ -63,82 +64,115 @@ void Solver::parse_pieces(const std::uint32_t piece_count, const std::uint32_t r
 
 		pieces.emplace_back(piece);
 	}
+
+	return pieces;
 }
 
-void Solver::algorithm_x(const Matrix &original_matrix, std::uint32_t depth)
+void Solver::algorithm_x(const Matrix &original_matrix, const std::uint32_t depth)
 {
+	// Matrix is empty, solution found
 	if(original_matrix.empty()) {
-		std::cout << "SOLVED " << depth << std::endl;
 		const auto signed_depth = static_cast<int>(depth);
-		current_best_result =
-		    (current_best_result != kUnsolved) ? std::min(current_best_result, signed_depth) : signed_depth;
+		// Update result, if better than existing
+		current_result = (signed_depth != kUnsolved) ? std::min(current_result, signed_depth) : signed_depth;
 		return;
 	}
 
+	// Just iterate row by row
 	for(auto index{0u}; index < original_matrix.size(); ++index) {
+		// Deepcopy original matrix and erase current row to prevent later modifications and omit backtracking
 		auto matrix = original_matrix;
 		const auto row_it = matrix.begin() + index;
-		auto row = std::move(*(row_it));
+		// Extract one current row from matrix
+		auto current_row = std::move(*(row_it));
 		matrix.erase(row_it);
 
-		for(auto column_it = row.cells.begin(); column_it != row.cells.end(); /**/) {
-			const auto column_index = column_it - row.cells.begin();
+		// Iterating over selected row by columns and search for conflicting rows
+		for(auto column_it = current_row.cells.begin(); column_it != current_row.cells.end(); /*unused*/) {
+			const auto column_index = column_it - current_row.cells.begin();
 			const auto &cell = *column_it;
 
+			// If row cell is empty, we need to check, is there are another filled cell in this column
 			if(Cell::Empty == cell) {
 				const auto all_zeros = std::all_of(matrix.begin(), matrix.end(), [&](const MatrixRow &matrix_row) {
 					return Cell::Empty == matrix_row.cells[column_index];
 				});
+				// If column is all zeros, this matrix cannot be solved
 				if(all_zeros) {
 					return;
 				}
+				// Go to next column of current row otherwise
 				++column_it;
 				continue;
 			}
 
-			for(auto remaining_row_it = matrix.begin(); remaining_row_it != matrix.end();) {
-				auto &rest_row = *remaining_row_it;
+			// Iterating over rest of rows by current column, to remove or adjust remaining rows
+			for(auto rest_row_it = matrix.begin(); rest_row_it != matrix.end(); /*unused*/) {
+				auto &rest_row = *rest_row_it;
 				const auto cell_it = rest_row.cells.begin() + column_index;
+				// If cell is filled it means conflict with current row, and rest row should be removed
 				if(Cell::Filled == *cell_it) {
-					remaining_row_it = matrix.erase(remaining_row_it);
-				} else {
+					rest_row_it = matrix.erase(rest_row_it);
+				}
+				// Not conflicting, just erase cell of this column in rest row
+				else {
 					rest_row.cells.erase(cell_it);
-					remaining_row_it = std::next(remaining_row_it);
+					rest_row_it = std::next(rest_row_it);
 				}
 			}
 
-			column_it = row.cells.erase(column_it);
+			// After all rest rows being iterated by current column, we may erase it
+			column_it = current_row.cells.erase(column_it);
 		}
 
+		// Calling this algo again on remaining matrix copy
 		algorithm_x(matrix, 1 + depth);
-		/*row_it = matrix.insert(row_it, std::move(row));
-		++row_it;*/
 	}
 }
 
-int Solver::complete_map(std::uint32_t rows, std::uint32_t columns) noexcept
+Solver::Matrix Solver::make_matrix(const std::uint32_t piece_count,
+                                   const std::uint32_t height,
+                                   const std::uint32_t width)
 {
-	std::cout << "#######################################" << std::endl;
-	current_best_result = kUnsolved;
+	auto pieces = parse_pieces(piece_count, height, width);
 
 	Matrix matrix;
 	matrix.reserve(pieces.size());
 
+	// Unrolling pieces into matrix, each row of matrix is representation of all cells of piece mapped into
+	// one-dimension array, which is width*height size of map:
+
+	// Piece 1: x0y0 x1y0 x2y0 x0y1 x1y1 x2y1 x0y2 x1y2 x2y2
+	// Piece 2: x0y0 x1y0 x2y0 x0y1 x1y1 x2y1 x0y2 x1y2 x2y2
+
 	for(const auto &piece : pieces) {
-		std::cout << "# PIECE " << piece << std::endl;
-		Cells cells(rows * columns, Cell::Empty);
+		Cells cells(width * height, Cell::Empty);
 		MatrixRow matrix_row{piece, std::move(cells)};
 
 		for(auto column{piece.left_column}; column < piece.right_column; ++column) {
 			for(auto row{piece.top_row}; row < piece.bottom_row; ++row) {
-				matrix_row.cells[columns * row + column] = Cell::Filled;
+				matrix_row.cells[width * row + column] = Cell::Filled;
+				++matrix_row.weight;
 			}
 		}
 		matrix.emplace_back(std::move(matrix_row));
 	}
 
-	algorithm_x(std::move(matrix), 0);
-	return current_best_result;
+	// Sort pieces by their weight - more cells means more intersections, it's more optimal, because we will
+	// remove conflicting rows much earlier
+	std::sort(
+	    matrix.begin(), matrix.end(), [](const MatrixRow &lh, const MatrixRow &rh) { return lh.weight > rh.weight; });
+
+	return matrix;
+}
+
+int Solver::complete_map(const std::uint32_t piece_count,
+                         const std::uint32_t height,
+                         const std::uint32_t width) noexcept
+{
+	current_result = kUnsolved;
+	algorithm_x(make_matrix(piece_count, height, width), 0);
+	return current_result;
 }
 
 void Solver::print_case(int result) const noexcept
