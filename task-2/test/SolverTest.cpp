@@ -47,6 +47,31 @@ TEST_F(SolverTest, ShouldSolveProvidedExample)
 	ASSERT_EQ(output.str(), expected);
 }
 
+TEST_F(SolverTest, ShouldSolveMultipleCases)
+{
+	input << "2 10\n"
+	         "100\n"
+	         "2\n"
+	         
+	         "2 10\n"
+	         "100\n"
+	         "2\n"
+	         
+	         "2 10\n"
+	         "100\n"
+	         "2\n"
+	         
+	         "0 0";
+	
+	const std::string expected =
+	    "Case 1: 8\n\n"
+	    "Case 2: 8\n\n"
+	    "Case 3: 8\n\n";
+
+	solver.solve();
+	ASSERT_EQ(output.str(), expected);
+}
+
 TEST_F(SolverTest, ShoudSolveOverflow)
 {
 	input << "1 10\n"

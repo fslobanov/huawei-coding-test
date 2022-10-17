@@ -24,12 +24,13 @@ public:
 private:
 	constexpr static auto kNumbersLimit = 1'000ul;
 	constexpr static auto kUpperBoundLimit = 1'000'000'000ul;
+	constexpr static auto kMaxDepth = 4u;
 
 	using Number = std::uint32_t;
+	// We need input numbers to be sorted and unique, so we insert them into set with no dynamic allocations
 	using Numbers = std::pmr::set<Number, std::greater<Number>>;
-
 	constexpr static auto kNodeMemory = sizeof(Numbers::node_type) + 32;
-	//static_assert(kNodeMemory == 48 );
+	// Buffer should be big enough to fit node data and std::set pointers
 	using Buffer = std::array<Number, kNumbersLimit * kNodeMemory>;
 
 	enum class [[nodiscard]] Stop : bool
@@ -43,31 +44,39 @@ private:
 	common::OutputStream &output;
 
 	Buffer buffer;
+	std::uint32_t upper_bound;
 	std::size_t greatest_number;
 
 private:
-	[[nodiscard]] bool process_case(std::size_t case_number) noexcept(false);
-	void read_numbers(std::size_t number_count, std::size_t upper_bound, Numbers &numbers) noexcept;
-	[[nodiscard]] std::uint32_t find_greatest_number(Numbers &numbers, uint32_t upper_bound) noexcept(false);
-	
 	/**
-	 * @brief Recursively search for proper solution
-	 * @param numbers
-	 * @param current_it
-	 * @param depth
-	 * @param sum
-	 * @param upper_bound
-	 * @return
+	 * @brief Processes each cases one by one
+	 */
+	Stop process_case(std::size_t case_number) noexcept(false);
+
+	/**
+	 * @brief Reads numbers from stream into provided container
+	 * @details Drops numbers greater which are out of bounds
+	 */
+	void read_numbers(std::size_t number_count, Numbers &numbers) noexcept;
+
+	/**
+	 * @brief Driver for recursive implementation
+	 * @return GN
+	 */
+	[[nodiscard]] std::uint32_t find_greatest_number(Numbers &numbers) noexcept(false);
+
+	/**
+	 * @brief Recursively searches for proper solution
+	 * @return Indicator that found GN which is equal to upper_bound
 	 */
 	Stop find_greatest_number_impl(const Numbers &numbers,
-	                               Numbers ::const_iterator current_it,
+	                               Numbers ::const_iterator cursor,
 	                               std::uint8_t depth,
-	                               std::size_t sum,
-	                               uint32_t upper_bound) noexcept(false);
+	                               std::size_t sum) noexcept(false);
 	/**
 	 * @brief Just prints case results to output stream
 	 */
-	void print_case(std::size_t case_number, std::size_t max_sum);
+	void print_case(std::size_t case_number, std::uint32_t greatest);
 };
 
 }  // namespace task_two

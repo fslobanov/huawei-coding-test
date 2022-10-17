@@ -12,47 +12,45 @@
 
 namespace task_two {
 
-namespace {
-constexpr auto kMaxDepth = 4;
-}
-
 Solver::Solver(common::InputStream &input, common::OutputStream &output)
     : input{input}
     , output{output}
     , buffer{0}
+    , upper_bound{0}
+    , greatest_number{0}
 {
 }
 
 void Solver::solve() noexcept(false)
 {
-	for(auto case_index{0u}; process_case(case_index); ++case_index) {
+	for(auto case_index{0u}; Stop::No == process_case(case_index); ++case_index) {
 	}
 }
 
-void Solver::print_case(const std::size_t case_number, const std::size_t max_sum)
+void Solver::print_case(const std::size_t case_number, const std::uint32_t greatest)
 {
-	output << "Case " << std::to_string(1 + case_number) << ": " << std::to_string(max_sum) << "\n" << std::endl;
+	output << "Case " << std::to_string(1 + case_number) << ": " << std::to_string(greatest) << "\n" << std::endl;
 }
 
-bool Solver::process_case(const std::size_t case_number) noexcept(false)
+Solver::Stop Solver::process_case(const std::size_t case_number) noexcept(false)
 {
 	std::pmr::monotonic_buffer_resource memory_resource{buffer.data(), buffer.size()};
 	std::pmr::polymorphic_allocator<Number> allocator{&memory_resource};
 	Numbers numbers{allocator};
 
 	const auto number_count = common::parse_integer(input, 0, kNumbersLimit);
-	const auto upper_bound = common::parse_integer(input, 0, kUpperBoundLimit);
+	upper_bound = common::parse_integer(input, 0, kUpperBoundLimit);
 
 	if(!number_count && !upper_bound) {
-		return false;
+		return Stop::Yes;
 	}
 
-	read_numbers(number_count, upper_bound, numbers);
-	print_case(case_number, find_greatest_number(numbers, upper_bound));
-	return true;
+	read_numbers(number_count, numbers);
+	print_case(case_number, find_greatest_number(numbers));
+	return Stop::No;
 }
 
-void Solver::read_numbers(const std::size_t number_count, const std::size_t upper_bound, Numbers &numbers) noexcept
+void Solver::read_numbers(const std::size_t number_count, Numbers &numbers) noexcept
 {
 	for(auto index{0u}; index < number_count; ++index) {
 		try {
@@ -64,13 +62,12 @@ void Solver::read_numbers(const std::size_t number_count, const std::size_t uppe
 }
 
 Solver::Stop Solver::find_greatest_number_impl(const Numbers &numbers,
-                                               const Numbers ::const_iterator current_it,
+                                               const Numbers ::const_iterator cursor,
                                                const std::uint8_t depth,
-                                               const std::size_t sum,
-                                               const uint32_t upper_bound) noexcept(false)
+                                               const std::size_t sum) noexcept(false)
 {
 	// If we reach out of depth or numbers, we should stop our search
-	if(kMaxDepth == depth || current_it == numbers.end()) {
+	if(kMaxDepth == depth || cursor == numbers.end()) {
 		// Perfect, we got GN, but seems this might not happen, because we check it at previous call
 		if(sum == upper_bound) {
 			greatest_number = upper_bound;
@@ -84,33 +81,38 @@ Solver::Stop Solver::find_greatest_number_impl(const Numbers &numbers,
 		return Stop::No;
 	}
 
-	// Simply iterate over numbers
-	for(auto number_it = current_it; number_it != numbers.cend(); ++number_it) {
+	// Simply iterate over rest numbers
+	for(auto number_it = cursor; number_it != numbers.cend(); ++number_it) {
 		const auto new_sum = sum + *number_it;
+
+		// If sum is equal, perfect, we found solution
 		if(new_sum == upper_bound) {
 			greatest_number = upper_bound;
 			return Stop::Yes;
 		}
-		
+
+		// Sum overflow, giving up
 		if(new_sum > upper_bound) {
 			return Stop::No;
 		}
 
-		if(Stop::Yes == find_greatest_number_impl(numbers, number_it, 1 + depth, new_sum, upper_bound)) {
+		// Trying to use this number again
+		if(Stop::Yes == find_greatest_number_impl(numbers, number_it, 1 + depth, new_sum)) {
 			return Stop::Yes;
 		}
 
-		if(Stop::Yes == find_greatest_number_impl(numbers, std::next(number_it), 1 + depth, new_sum, upper_bound)) {
+		// Using next number which is less than current
+		if(Stop::Yes == find_greatest_number_impl(numbers, std::next(number_it), 1 + depth, new_sum)) {
 			return Stop::Yes;
 		}
 	}
 	return Stop::No;
 }
 
-std::uint32_t Solver::find_greatest_number(Numbers &numbers, const std::uint32_t upper_bound) noexcept(false)
+std::uint32_t Solver::find_greatest_number(Numbers &numbers) noexcept(false)
 {
 	greatest_number = 0;
-	const auto equals_upper_bound = find_greatest_number_impl(numbers, numbers.begin(), 0, 0, upper_bound);
+	const auto equals_upper_bound = find_greatest_number_impl(numbers, numbers.begin(), 0, 0);
 	(void)equals_upper_bound;
 	return greatest_number;
 }
