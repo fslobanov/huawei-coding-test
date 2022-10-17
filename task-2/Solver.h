@@ -32,6 +32,12 @@ private:
 	//static_assert(kNodeMemory == 48 );
 	using Buffer = std::array<Number, kNumbersLimit * kNodeMemory>;
 
+	enum class [[nodiscard]] Stop : bool
+	{
+		No,
+		Yes
+	};
+
 private:
 	common::InputStream &input;
 	common::OutputStream &output;
@@ -43,16 +49,24 @@ private:
 	[[nodiscard]] bool process_case(std::size_t case_number) noexcept(false);
 	void read_numbers(std::size_t number_count, std::size_t upper_bound, Numbers &numbers) noexcept;
 	[[nodiscard]] std::uint32_t find_greatest_number(Numbers &numbers, uint32_t upper_bound) noexcept(false);
-	enum class [[nodiscard]] Stop : bool
-	{
-		No,
-		Yes
-	};
+	
+	/**
+	 * @brief Recursively search for proper solution
+	 * @param numbers
+	 * @param current_it
+	 * @param depth
+	 * @param sum
+	 * @param upper_bound
+	 * @return
+	 */
 	Stop find_greatest_number_impl(const Numbers &numbers,
 	                               Numbers ::const_iterator current_it,
 	                               std::uint8_t depth,
 	                               std::size_t sum,
 	                               uint32_t upper_bound) noexcept(false);
+	/**
+	 * @brief Just prints case results to output stream
+	 */
 	void print_case(std::size_t case_number, std::size_t max_sum);
 };
 

@@ -1,4 +1,5 @@
 # huawei-coding-test
+
 Huawei Cloud Storage team employment test
 
 ## Text 1(15)
@@ -12,14 +13,25 @@ after summation completion, we fill output buffer from right to left, and use vi
 
 ## Text 2(58)
 
+The solution of this task is to iterate over numbers recursively with prefix summation. Numbers being sorted, iteration starts
+from biggest to lowest, because it will allow to find GN faster. The pitfall of this task that cannot just subtract numbers from
+upper bound to find proper sequence, consider:
+
+3 55
+40
+5
+7
+00
+
+Correct answer is 40+5+5+5, not 40+7+7, so we should really find the closest sum
 
 ## Test 3(74)
 
 This problem is much complexer than previous two. It's an exact cover problem, and solution for this
 is Donald Knuth's algorithm named AlgorithmX https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X
-State-of-the-art implementation for this algorithm is Dancing Links algorithm, but for this 
+State-of-the-art implementation for this algorithm is Dancing Links algorithm, but for this
 task I decided to implement simplified AlgorithmX by my own, and not to use 3rdparty implementations(task does not forbid this).
-My implementation is quite simple and solution matrix being built from bit vectors, so memory overhead per the biggest 
+My implementation is quite simple and solution matrix being built from bit vectors, so memory overhead per the biggest
 matrix would be: (30*30cells / 8bits) * 100pieces = 12Kb. Matrix being copied before each modification, so it allow
 us not to use backtracking mechanism to restore original matrix state after recursion returns. Worst case is to have
 100 matrix copies(we consider them as same size, but it's not actually true), when we delete only one row per algorithm call.

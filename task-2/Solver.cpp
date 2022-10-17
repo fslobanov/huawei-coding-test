@@ -69,18 +69,22 @@ Solver::Stop Solver::find_greatest_number_impl(const Numbers &numbers,
                                                const std::size_t sum,
                                                const uint32_t upper_bound) noexcept(false)
 {
+	// If we reach out of depth or numbers, we should stop our search
 	if(kMaxDepth == depth || current_it == numbers.end()) {
+		// Perfect, we got GN, but seems this might not happen, because we check it at previous call
 		if(sum == upper_bound) {
 			greatest_number = upper_bound;
 			return Stop::Yes;
 		}
 
+		// If sum is less than bound, we try to update GN if possible
 		if(sum < upper_bound) {
 			greatest_number = std::max(greatest_number, sum);
 		}
 		return Stop::No;
 	}
 
+	// Simply iterate over numbers
 	for(auto number_it = current_it; number_it != numbers.cend(); ++number_it) {
 		const auto new_sum = sum + *number_it;
 		if(new_sum == upper_bound) {

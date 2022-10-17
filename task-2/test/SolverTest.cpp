@@ -101,4 +101,34 @@ TEST_F(SolverTest, ShouldSolve2)
 	ASSERT_EQ(output.str(), expected);
 }
 
+TEST_F(SolverTest, ShouldSolveAnyLess)
+{
+	for(auto value{0u}; value <= 40; ++value) {
+		input.clear();
+		output.str("");
+
+		const auto value_string = std::to_string(value);
+		
+		input << "10"
+		      << " " << value_string
+		      << "\n"
+		         "10\n"
+		         "9\n"
+		         "8\n"
+		         "7\n"
+		         "6\n"
+		         "5\n"
+		         "4\n"
+		         "3\n"
+		         "2\n"
+		         "1\n"
+		         "0 0";
+
+		const std::string expected = "Case 1: " + value_string + "\n\n";
+
+		solver.solve();
+		ASSERT_EQ(output.str(), expected);
+	}
+}
+
 }  // namespace
