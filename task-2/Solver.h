@@ -26,22 +26,33 @@ private:
 	constexpr static auto kUpperBoundLimit = 1'000'000'000ul;
 
 	using Number = std::uint32_t;
-	using Numbers = std::pmr::set<Number>;
+	using Numbers = std::pmr::set<Number, std::greater<Number>>;
 
 	constexpr static auto kNodeMemory = sizeof(Numbers::node_type) + 32;
 	//static_assert(kNodeMemory == 48 );
 	using Buffer = std::array<Number, kNumbersLimit * kNodeMemory>;
+
 private:
 	common::InputStream &input;
 	common::OutputStream &output;
 
 	Buffer buffer;
+	std::size_t greatest_number;
 
 private:
 	[[nodiscard]] bool process_case(std::size_t case_number) noexcept(false);
-	void read_numbers(std::size_t number_count, std::size_t upper_bound, Numbers & numbers) noexcept;
-	[[nodiscard]] static std::uint32_t find_greatest_number(Numbers & numbers,
-	                                                        const uint32_t upper_bound) noexcept(false);
+	void read_numbers(std::size_t number_count, std::size_t upper_bound, Numbers &numbers) noexcept;
+	[[nodiscard]] std::uint32_t find_greatest_number(Numbers &numbers, uint32_t upper_bound) noexcept(false);
+	enum class [[nodiscard]] Stop : bool
+	{
+		No,
+		Yes
+	};
+	Stop find_greatest_number_impl(const Numbers &numbers,
+	                               Numbers ::const_iterator current_it,
+	                               std::uint8_t depth,
+	                               std::size_t sum,
+	                               uint32_t upper_bound) noexcept(false);
 	void print_case(std::size_t case_number, std::size_t max_sum);
 };
 

@@ -12,6 +12,10 @@
 
 namespace task_two {
 
+namespace {
+constexpr auto kMaxDepth = 4;
+}
+
 Solver::Solver(common::InputStream &input, common::OutputStream &output)
     : input{input}
     , output{output}
@@ -59,36 +63,51 @@ void Solver::read_numbers(const std::size_t number_count, const std::size_t uppe
 	}
 }
 
-std::uint32_t Solver::find_greatest_number(Solver::Numbers &numbers, const std::uint32_t upper_bound) noexcept(false)
+Solver::Stop Solver::find_greatest_number_impl(const Numbers &numbers,
+                                               const Numbers ::const_iterator current_it,
+                                               const std::uint8_t depth,
+                                               const std::size_t sum,
+                                               const uint32_t upper_bound) noexcept(false)
 {
-	if(numbers.empty()) {
-		return 0;
-	}
-
-	auto iterator = numbers.rbegin();
-	if(*iterator == upper_bound) {
-		return upper_bound;
-	}
-
-	std::size_t remaining{upper_bound};
-	std::size_t greatest_number{0};
-	std::size_t component_count{4};
-
-	while(component_count != 0) {
-		const auto value = *iterator;
-		const auto quotient = remaining / value;
-		const auto remainder = remaining % value;
-
-		const auto count = std::min(quotient, component_count);
-		greatest_number += (count * value);
-		if(greatest_number == upper_bound) {
-			return upper_bound;
+	if(kMaxDepth == depth || current_it == numbers.end()) {
+		if(sum == upper_bound) {
+			greatest_number = upper_bound;
+			return Stop::Yes;
 		}
 
-		component_count -= count;
-		iterator = std::lower_bound(iterator, numbers.rend(), remainder, std::greater<>{});
+		if(sum < upper_bound) {
+			greatest_number = std::max(greatest_number, sum);
+		}
+		return Stop::No;
 	}
 
+	for(auto number_it = current_it; number_it != numbers.cend(); ++number_it) {
+		const auto new_sum = sum + *number_it;
+		if(new_sum == upper_bound) {
+			greatest_number = upper_bound;
+			return Stop::Yes;
+		}
+		
+		if(new_sum > upper_bound) {
+			return Stop::No;
+		}
+
+		if(Stop::Yes == find_greatest_number_impl(numbers, number_it, 1 + depth, new_sum, upper_bound)) {
+			return Stop::Yes;
+		}
+
+		if(Stop::Yes == find_greatest_number_impl(numbers, std::next(number_it), 1 + depth, new_sum, upper_bound)) {
+			return Stop::Yes;
+		}
+	}
+	return Stop::No;
+}
+
+std::uint32_t Solver::find_greatest_number(Numbers &numbers, const std::uint32_t upper_bound) noexcept(false)
+{
+	greatest_number = 0;
+	const auto equals_upper_bound = find_greatest_number_impl(numbers, numbers.begin(), 0, 0, upper_bound);
+	(void)equals_upper_bound;
 	return greatest_number;
 }
 

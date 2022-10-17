@@ -50,6 +50,7 @@ TEST_F(SolverTest, SouldSolveProvidedExample)
 	         "0 20 30 30\n"
 	         "0 0 15 30\n"
 	         "15 0 30 30";
+	
 	const std::string expected =
 	    "1\n"
 	    "-1\n"

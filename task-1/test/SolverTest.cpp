@@ -34,7 +34,7 @@ public:
 	Solver solver;
 };
 
-TEST_F(SolverTest, ProvidedExample)
+TEST_F(SolverTest, ShouldSolveProvidedExample)
 {
 	input << "2\n"
 	         "1 2\n"

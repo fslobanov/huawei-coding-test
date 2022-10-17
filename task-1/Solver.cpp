@@ -36,7 +36,6 @@ void Solver::solve() noexcept(false)
 void Solver::read_number(Number &number) noexcept(false)
 {
 	// Not really need to clear buffers, we use only written bytes
-	number.clear();
 	input >> number;
 
 	if(input.fail()) {
@@ -62,7 +61,6 @@ std::uint8_t Solver::as_digit(char symbol) noexcept(false)
 std::size_t Solver::sum_numbers() noexcept(false)
 {
 	// Not really need to reset this buffer, we use only written bytes
-	sum_buffer.fill(0);
 
 	auto left_it = left.rbegin();
 	auto right_it = right.rbegin();
