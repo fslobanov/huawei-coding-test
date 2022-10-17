@@ -33,7 +33,7 @@ public:
 	Solver solver;
 };
 
-TEST_F(SolverTest, ProvidedExample)
+TEST_F(SolverTest, SouldSolveProvidedExample)
 {
 	input << "3\n"
 	         
