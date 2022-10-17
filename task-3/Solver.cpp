@@ -74,11 +74,10 @@ void Solver::algorithm_x(const Matrix &original_matrix, const std::uint32_t dept
 	if(original_matrix.empty()) {
 		const auto signed_depth = static_cast<int>(depth);
 		// Update result, if better than existing
-		current_result =
-		    (current_result != kUnsolved) ? std::min(current_result, signed_depth) : signed_depth;
+		current_result = (current_result != kUnsolved) ? std::min(current_result, signed_depth) : signed_depth;
 		return;
 	}
-	
+
 	// Just iterate matrix row by row
 	for(auto index{0u}; index < original_matrix.size(); ++index) {
 		// Deepcopy original matrix and erase current row to prevent later modifications and omit backtracking
@@ -95,9 +94,10 @@ void Solver::algorithm_x(const Matrix &original_matrix, const std::uint32_t dept
 
 			// If row cell is empty, we need to check, is there are another filled cell in this column
 			if(Cell::Empty == cell) {
-				const auto all_zeros = std::all_of(matrix.begin(), matrix.end(), [&](const MatrixRow &matrix_row) noexcept {
-					return Cell::Empty == matrix_row.cells[column_index];
-				});
+				const auto all_zeros =
+				    std::all_of(matrix.begin(), matrix.end(), [&](const MatrixRow &matrix_row) noexcept {
+					    return Cell::Empty == matrix_row.cells[column_index];
+				    });
 				// If column is all zeros, this matrix cannot be solved
 				if(all_zeros) {
 					return;
@@ -158,7 +158,7 @@ Solver::Matrix Solver::make_matrix(const std::uint32_t piece_count,
 		}
 		matrix.emplace_back(std::move(matrix_row));
 	}
-	
+
 	return matrix;
 }
 

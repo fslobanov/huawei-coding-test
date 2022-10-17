@@ -17,11 +17,11 @@ class Solver final
 {
 public:
 	// Task precondition says than max number of cases is 1 <= T <= 20
-	constexpr static auto kCasesMin = 1ul;
-	constexpr static auto kCasesMax = 20ul;
+	constexpr static auto kCasesMin{1ul};
+	constexpr static auto kCasesMax{20ul};
 	// Task precondition says than each integer will not exceed 1000 digits
-	constexpr static auto kMaxDigits = 1'000ul;
-	
+	constexpr static auto kMaxDigits{1'000ul};
+
 public:
 	Solver(common::InputStream &input, common::OutputStream &output);
 	void solve() noexcept(false);
@@ -50,7 +50,7 @@ private:
  	* @throw std::exception If reading failed or length preconditions are not met
  	* @warning Does not check number contents
  	*/
-	void read_number(Number & number) noexcept(false);
+	void read_number(Number &number) noexcept(false);
 
 	/**
  	* @brief Sums two numbers and writes summation result from end to begin of summation buffer

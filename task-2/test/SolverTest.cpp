@@ -52,17 +52,17 @@ TEST_F(SolverTest, ShouldSolveMultipleCases)
 	input << "2 10\n"
 	         "100\n"
 	         "2\n"
-	         
+
 	         "2 10\n"
 	         "100\n"
 	         "2\n"
-	         
+
 	         "2 10\n"
 	         "100\n"
 	         "2\n"
-	         
+
 	         "0 0";
-	
+
 	const std::string expected =
 	    "Case 1: 8\n\n"
 	    "Case 2: 8\n\n"
@@ -133,7 +133,7 @@ TEST_F(SolverTest, ShouldSolveAnyLess)
 		output.str("");
 
 		const auto value_string = std::to_string(value);
-		
+
 		input << "10"
 		      << " " << value_string
 		      << "\n"

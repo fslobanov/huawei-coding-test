@@ -22,7 +22,8 @@ public:
 	void solve() noexcept(false);
 
 private:
-	constexpr static int kUnsolved = -1;
+	constexpr static auto kUnsolved{-1};
+
 	enum class Cell : bool
 	{
 		Empty = false,
@@ -64,14 +65,35 @@ private:
 	int current_result;
 
 private:
+	/**
+	 * @brief Simply processes case
+	 */
 	void process_case(std::size_t case_number) noexcept(false);
+	/**
+	 * @brief Parses pieces	from input stream
+	 * @throw std::exception If any piece is broken
+	 */
 	[[nodiscard]] Piece::Storage parse_pieces(std::uint32_t piece_count,
 	                                          std::uint32_t rows,
 	                                          std::uint32_t columns) noexcept(false);
+	/**
+	 * @brief Completes treasure map
+	 * @return Min number of pieces to cover map
+	 */
 	[[nodiscard]] int complete_map(std::uint32_t piece_count, std::uint32_t height, std::uint32_t width) noexcept;
+	/**
+	 * @brief Creates matrix of mapped pieces
+	 * @details Each row in matrix represents Piece. Row contains bitmap for all coordinates which are covered by Piece
+	 */
 	[[nodiscard]] Matrix make_matrix(std::uint32_t piece_count, std::uint32_t height, std::uint32_t width);
-	// https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X
+	/**
+	 * @brief Donald Knuth AlgoritmX implementation for Exact Cover problem solving
+	 * @link https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X
+	 */
 	void algorithm_x(const Matrix &original_matrix, std::uint32_t depth);
+	/**
+	 * @brief Simply prints result
+	 */
 	void print_case(int result) const noexcept;
 };
 

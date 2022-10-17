@@ -27,17 +27,17 @@ using OutputStream = std::ostream;
 {
 	std::string buf;
 	stream >> buf;
-	
+
 	if(stream.fail()) {
 		throw std::invalid_argument("failed to read an integer from stream");
 	}
 
 	const auto parsed = std::stoul(buf);
 	if(parsed >= std::numeric_limits<std::uint32_t>::max()) {
-		throw std::invalid_argument("integer does not fit into 32bit unsigned");
+		throw std::invalid_argument("integer does not fit into 32bit unsigned: '" + std::to_string(parsed) + "'");
 	}
 
-	const std::uint32_t value{static_cast<std::uint32_t>(parsed)};
+	const auto value{static_cast<std::uint32_t>(parsed)};
 
 	if(value < min || value > max) {
 		throw std::invalid_argument("value is out of range '" + std::to_string(value) + "'");
