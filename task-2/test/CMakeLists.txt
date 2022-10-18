@@ -8,3 +8,5 @@ target_link_libraries( ${target_id} PRIVATE solver-2 GTest::gtest_main )
 
 include( GoogleTest )
 gtest_discover_tests( ${target_id} )
+
+add_test(NAME "all-in-${target_id}" COMMAND ${target_id})

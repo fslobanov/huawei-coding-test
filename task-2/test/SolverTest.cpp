@@ -126,7 +126,7 @@ TEST_F(SolverTest, ShouldSolve2)
 	ASSERT_EQ(output.str(), expected);
 }
 
-TEST_F(SolverTest, ShouldSolveAnyLess)
+TEST_F(SolverTest, ShouldSolveAnyBoundIfNumbersAvailable)
 {
 	for(auto value{0u}; value <= 40; ++value) {
 		input.clear();
@@ -155,5 +155,25 @@ TEST_F(SolverTest, ShouldSolveAnyLess)
 		ASSERT_EQ(output.str(), expected);
 	}
 }
+
+/*
+TEST_F(SolverTest, ShouldSolveWorstCase)
+{
+	input << std::to_string(task_two::Solver::kNumbersLimit)
+	      << " " << std::to_string(task_two::Solver::kUpperBoundLimit)
+	      << "\n";
+		
+	for(auto number{1u}; number <= Solver::kNumbersLimit; ++ number)
+	{
+		input << std::to_string(number) << "\n";
+	}
+	input << "0 0";
+	
+	const std::string expected = "Case 1: " + std::to_string(4 * Solver::kNumbersLimit) + "\n\n";
+
+	solver.solve();
+	ASSERT_EQ(output.str(), expected);
+}
+*/
 
 }  // namespace

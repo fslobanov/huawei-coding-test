@@ -18,14 +18,15 @@ namespace task_two {
 class Solver final
 {
 public:
+	constexpr static auto kNumbersLimit{1'000ul};
+	constexpr static auto kUpperBoundLimit{1'000'000'000ul};
+	constexpr static auto kMaxDepth{4u};
+	
+public:
 	Solver(common::InputStream &input, common::OutputStream &output);
 	void solve() noexcept(false);
 
 private:
-	constexpr static auto kNumbersLimit{1'000ul};
-	constexpr static auto kUpperBoundLimit{1'000'000'000ul};
-	constexpr static auto kMaxDepth{4u};
-
 	using Number = std::uint32_t;
 	// We need input numbers to be sorted and unique, so we insert them into set with no dynamic allocations
 	using Numbers = std::pmr::set<Number, std::greater<Number>>;

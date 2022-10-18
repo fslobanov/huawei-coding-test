@@ -60,4 +60,21 @@ TEST_F(SolverTest, SouldSolveProvidedExample)
 	ASSERT_EQ(output.str(), expected);
 }
 
+TEST_F(SolverTest, SouldSolveWorstMemoryCase)
+{
+	constexpr static auto kSize = 30;
+	constexpr static auto kCount = 30;
+
+	input << "1\n" << std::to_string(kSize) << " " << std::to_string(kSize) << " " << std::to_string(kCount) << "\n";
+
+	for(auto count{0u}; count < kCount; ++count) {
+		input << std::to_string(count) << " " << std::to_string(count) << " " << std::to_string(count + 1) << " "
+		      << std::to_string(count + 1) << "\n";
+	}
+	const std::string expected = "-1\n";
+
+	solver.solve();
+	ASSERT_EQ(output.str(), expected);
+}
+
 }  // namespace
