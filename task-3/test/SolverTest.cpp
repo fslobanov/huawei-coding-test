@@ -60,7 +60,7 @@ TEST_F(SolverTest, SouldSolveProvidedExample)
 	ASSERT_EQ(output.str(), expected);
 }
 
-TEST_F(SolverTest, SouldSolveWorstMemoryCase)
+TEST_F(SolverTest, JustCase)
 {
 	constexpr static auto kSize = 30;
 	constexpr static auto kCount = 30;
