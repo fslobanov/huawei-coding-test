@@ -73,6 +73,7 @@ private:
 	Stop find_greatest_number_impl(const Numbers &numbers,
 	                               Numbers ::const_iterator cursor,
 	                               std::uint8_t depth,
+	                               std::uint8_t same_number,
 	                               std::size_t sum) noexcept(false);
 	/**
 	 * @brief Just prints case results to output stream

@@ -156,7 +156,6 @@ TEST_F(SolverTest, ShouldSolveAnyBoundIfNumbersAvailable)
 	}
 }
 
-/*
 TEST_F(SolverTest, ShouldSolveWorstCase)
 {
 	input << std::to_string(task_two::Solver::kNumbersLimit)
@@ -174,6 +173,5 @@ TEST_F(SolverTest, ShouldSolveWorstCase)
 	solver.solve();
 	ASSERT_EQ(output.str(), expected);
 }
-*/
 
 }  // namespace
