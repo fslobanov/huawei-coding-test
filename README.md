@@ -4,9 +4,9 @@ Huawei Cloud Storage team employment test
 
 ## How to build
 
-Both three tasks have tiny test coverage, so I used Google Test framework for this. GTest required to
+Both three tasks have tiny test coverage, I used Google Test framework for this. GTest required to
 be installed in your system, if you don't have it or not want to build tests, pass an '-Dhuawei_coding_test_BUILD_TESTS=OFF' 
-option to CMake, by default tests are enabled
+option to CMake, by default tests are enabled. Note that all test cases provided in tasks description are covered
 
 ## Text 1(15)
 
@@ -28,7 +28,7 @@ upper bound to find proper sequence, consider:
 7
 00
 
-Correct answer is 40+5+5+5, not 40+7+7, so we should really find the closest sum
+Correct answer is 40+5+5+5, not 40+7+7, so we should really find the GN less or equal to upper bound
 
 ## Test 3(74)
 
