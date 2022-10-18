@@ -116,7 +116,7 @@ Solver::Stop Solver::find_greatest_number_impl(const Numbers &numbers,
 		// We cannot use closest, because greater GN may exist, consider
 		// upper bound is 10, rest is [7,5]. 7 is closest to upper bound, but GN is 2*5
 		const Number missing = upper_bound - new_sum;
-		const auto missing_found = std::binary_search(number_it, numbers.end(), missing, std::greater<std::uint32_t>{});
+		const auto missing_found = std::binary_search(number_it, numbers.end(), missing, Descending{});
 		if(missing_found) {
 			greatest_number = upper_bound;
 			return Stop::Yes;

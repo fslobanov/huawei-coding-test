@@ -28,8 +28,10 @@ public:
 
 private:
 	using Number = std::uint32_t;
+	// Descending order compare
+	using Descending = std::greater<Number>;
 	// We need input numbers to be sorted and unique, so we insert them into set with no dynamic allocations
-	using Numbers = std::pmr::set<Number, std::greater<Number>>;
+	using Numbers = std::pmr::set<Number, Descending>;
 	constexpr static auto kNodeMemory = sizeof(Numbers::node_type) + 32;
 	// Buffer should be big enough to fit node data and std::set pointers
 	using Buffer = std::array<Number, kNumbersLimit * kNodeMemory>;
